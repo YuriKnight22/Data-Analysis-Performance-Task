@@ -1,1 +1,48 @@
 # Data-Analysis-Performance-Task
+
+Instructions for Altair:
+
+Install Python and Jupyter Extenstions in Visual code 
+Install inside the Terminal: pip install altair,jupyter,pandas,"vegafusion[embed]>=1.4.0", pip install --upgrade pip
+The last input was to install the pip to a new version otherwise the visulastation wont appear. 
+After the whole installation process please press run or run it all above if using Vs Code. Then the chart should appear. 
+You can copy the code down below or use the one I put on the folder and put into Visual code or in Collab.
+
+------------------------------------------------------------------------
+
+import pandas as pd 
+import altair as alt 
+
+alt.renderers.enable("mimetype") 
+
+data = pd.DataFrame({"x": range(10000)}) 
+
+alt.data_transformers.enable("default")
+
+# Load data
+df = pd.read_csv("https://raw.githubusercontent.com/YuriKnight22/W/main/shopping_trends_updated.csv") 
+
+print(df.columns) 
+
+# Explore unique values and value counts for 'Size' and 'Location'
+size_value_counts = df["Size"].value_counts()
+print("Size Value Counts:")
+print(size_value_counts)
+
+location_value_counts = df["Location"].value_counts()
+print("location_value_counts:")
+print(location_value_counts)
+
+# Create Altair Chart
+alt.Chart(df.dropna()).mark_bar().encode(
+    alt.X('Location:N', title="Location", axis=alt.Axis(labelAngle=-45), sort=alt.EncodingSortField(field='count(Customer ID)', op='count', order='descending')),
+    alt.Y('count(Customer ID):Q', title="Count of Customer IDs (Total Customer ID's is 3,900)"),
+    alt.Color('Size:N', scale=alt.Scale(scheme='greenblue'),title="Size of Clothing (S/M/L/XL)"),
+    alt.Tooltip(['Size:N', 'count(Customer ID):Q'], title="Size"), 
+    alt.Column('Gender:N', title="Gender (Male/Female)")# have another column with the correct size firgures and thats it then
+).properties(
+    title="Shopping Trends by Location, Gender, and Size (Size Of Clothing Purchased by each Customer: Medium: 1755, Large: 1053, Small: 663, Extra Large: 429) ", 
+    width=800,
+    height=400,
+    description="This chart shows the shopping trends by location, gender, and size."
+).configure_title(fontSize=16, anchor='start').configure_axis(titleFontSize=12, labelFontSize=10).interactive()
